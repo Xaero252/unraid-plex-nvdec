@@ -3,9 +3,7 @@
 # This should always return the name of the docker container running plex - assuming a single plex docker on the system.
 con="$(docker ps --format "{{.Names}}" | grep -i plex)"
 
-echo ""
-echo "<b>Applying hardware decode patch...</b>"
-echo "<hr>"
+echo -n "<b>Applying hardware decode patch... </b>"
 
 # Check to see if Plex Transcoder2 Exists first.
 exists=$(docker exec -i "$con" stat "/usr/lib/plexmediaserver/Plex Transcoder2" >/dev/null 2>&1; echo $?)
@@ -29,14 +27,10 @@ if [ "$exists" -eq 1 ]; then
 	
 	# chmod the new wrapper to be executable:
 	docker exec -i "$con" chmod +x "/usr/lib/plexmediaserver/Plex Transcoder" 
-	
-	# Restart the container to be safe - this step may be optional, need to do more testing.
-	echo "Restarting Plex docker..."
-	docker restart "$con" >/dev/null
+
 	echo '<font color="green"><b>Done!</b></font>' # Green means go!
 	
 else
 	# If we ended up here, the patch didn't even try to run, presumably because the patch was already applied.
-	echo ""
-	echo '<font color="red"><b>Patch already applied!</b></font>' # Red means stop!
+	echo '<br/><font color="red"><b>Patch already applied!</b></font>' # Red means stop!
 fi

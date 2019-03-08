@@ -31,5 +31,5 @@ if [ "$exists" -eq 1 ]; then
 	echo '<font color="green"><b>Done!</b></font>' # Green means go!
 else
 	# If we ended up here, the patch didn't even try to run, presumably because the patch was already applied.
-	echo '<br/><font color="red"><b>Patch already applied!</b></font>' # Red means stop!
+	echo '<font color="red"><b>Patch already applied!</b></font>' # Red means stop!
 fi

@@ -25,7 +25,7 @@ if [ "$exists" -eq 1 ]; then
 		else
 			exec /usr/lib/plexmediaserver/Plex\ Transcoder2 -hwaccel nvdec "$@"
 		fi
-		@EOF
+@EOF
 	
 	# chmod the new wrapper to be executable:
 	docker exec -i "$con" chmod +x "/usr/lib/plexmediaserver/Plex Transcoder" 

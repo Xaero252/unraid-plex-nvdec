@@ -15,17 +15,17 @@ if [ "$exists" -eq 1 ]; then
 	docker exec -i "$con" mv "/usr/lib/plexmediaserver/Plex Transcoder" "/usr/lib/plexmediaserver/Plex Transcoder2"
 	
 	# For Legibility and future updates - if needed, use a heredoc to create the wrapper:
-	docker exec -i "$con" /bin/sh -c 'xargs -0 printf > "/usr/lib/plexmediaserver/Plex Transcoder";' <<-'EOF'
+	docker exec -i "$con" /bin/sh -c 'sed "s/\(^\t\t\)//g" > "/usr/lib/plexmediaserver/Plex Transcoder";' <<'@EOF'
 		#!/bin/bash
 		marap=$(cut -c 10-14 <<<"$@")
 		nvdec=$(nvidia-smi -q | grep -iq Decoder ; echo $?)
-		
+
 		if [[ "$marap" == "mpeg4" || $nvdec -ne 0 ]]; then
 			exec /usr/lib/plexmediaserver/Plex\ Transcoder2 "$@"
 		else
 			exec /usr/lib/plexmediaserver/Plex\ Transcoder2 -hwaccel nvdec "$@"
 		fi
-	EOF
+@EOF
 	
 	# chmod the new wrapper to be executable:
 	docker exec -i "$con" chmod +x "/usr/lib/plexmediaserver/Plex Transcoder" 

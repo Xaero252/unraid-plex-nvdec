@@ -38,7 +38,6 @@ docker exec -i "$con" chmod +x "/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
 
 command="/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
 if [ "$codec_arguments" ]; then
-	command+="${codec_arguments}"
 	docker exec -i "$con" /bin/sh -c "${command}${codec_arguments}"
 else
 	docker exec -i "$con" /bin/sh -c "${command}"

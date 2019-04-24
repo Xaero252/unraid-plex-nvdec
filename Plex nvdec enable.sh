@@ -2,7 +2,7 @@
 
 ############################### DISCLAIMER ################################
 # This script now uses someone elses work!                                #
-# Please visit https://raw.githubusercontent.com/revr3nd/plex-nvdec/      #
+# Please visit https://github.com/revr3nd/plex-nvdec/                     #
 # for the author of the new transcode wrapper, and show them your support!#
 # Any issues using this script should be reported at:                     #
 # https://gist.github.com/Xaero252/9f81593e4a5e6825c045686d685e2428       #

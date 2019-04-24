@@ -10,6 +10,7 @@
 
 # This is the download location for the raw script off github. If the location changes, change it here
 plex_nvdec_url="https://raw.githubusercontent.com/revr3nd/plex-nvdec/master/plex-nvdec-patch.sh"
+patch_container_path="/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
 
 # This should always return the name of the docker container running plex - assuming a single plex docker on the system.
 con="$(docker ps --format "{{.Names}}" | grep -i plex)"
@@ -29,16 +30,15 @@ echo -n "<b>Applying hardware decode patch... </b><br/>"
 	
 # Grab the latest version of the plex-nvdec-patch.sh from github:
 echo 'Downloading patch script...'
-docker exec -i "$con"  /bin/sh -c "wget -q --show-progress --progress=bar:force:noscroll -P /usr/lib/plexmediaserver/ ${plex_nvdec_url}"
+wget -qO- --show-progress --progress=bar:force:noscroll "${plex_nvdec_url}" | docker exec -i "$con"  /bin/sh -c "cat > ${patch_container_path}" 
 
 # Make the patch script executable.
-docker exec -i "$con" chmod +x "/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
+docker exec -i "$con" chmod +x "${patch_container_path}"
 
 # Run the script, with arguments for codecs, if present.
 
-command="/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
 if [ "$codec_arguments" ]; then
-	docker exec -i "$con" /bin/sh -c "${command}${codec_arguments}"
+	docker exec -i "$con" /bin/sh -c "${patch_container_path}${codec_arguments}"
 else
-	docker exec -i "$con" /bin/sh -c "${command}"
+	docker exec -i "$con" /bin/sh -c "${patch_container_path}"
 fi

@@ -1,37 +1,45 @@
 #!/bin/bash
 
+############################### DISCLAIMER ################################
+# This script now uses someone elses work!                                #
+# Please visit https://raw.githubusercontent.com/revr3nd/plex-nvdec/      #
+# for the author of the new transcode wrapper, and show them your support!#
+# Any issues using this script should be reported at:                     #
+# https://gist.github.com/Xaero252/9f81593e4a5e6825c045686d685e2428       #
+###########################################################################
+
+# This is the download location for the raw script off github. If the location changes, change it here
+plex_nvdec_url="https://raw.githubusercontent.com/revr3nd/plex-nvdec/master/plex-nvdec-patch.sh"
+
 # This should always return the name of the docker container running plex - assuming a single plex docker on the system.
 con="$(docker ps --format "{{.Names}}" | grep -i plex)"
 
-echo -n "<b>Applying hardware decode patch... </b>"
+# Uncomment and change the variable below if you wish to edit which codecs are decoded:
+#CODECS=("h264" "hevc" "mpeg2video" "mpeg4" "vc1" "vp8" "vp9")
 
-# Check to see if Plex Transcoder2 Exists first.
-exists=$(docker exec -i "$con" stat "/usr/lib/plexmediaserver/Plex Transcoder2" >/dev/null 2>&1; echo $?)
+# Turn the CODECS array into a string of arguments for the wrapper script:
+if [ "$CODECS" ]; then
+	codec_arguments=""
+	for format in "${CODECS[@]}"; do
+		codec_arguments+=" -c ${format}"
+	done
+fi
 
-if [ "$exists" -eq 1 ]; then 
-	# If it doesn't, we run the clause below
+echo -n "<b>Applying hardware decode patch... </b><br/>"
 	
-	# Move the Plex Transcoder to a different location so we can replace it with our wrapper
-	docker exec -i "$con" mv "/usr/lib/plexmediaserver/Plex Transcoder" "/usr/lib/plexmediaserver/Plex Transcoder2"
-	
-	# For Legibility and future updates - if needed, use a heredoc to create the wrapper:
-	docker exec -i "$con" /bin/sh -c 'sed "s/\(^\t\t\)//g" > "/usr/lib/plexmediaserver/Plex Transcoder";' <<'@EOF'
-		#!/bin/bash
-		marap=$(cut -c 10-14 <<<"$@")
-		nvdec=$(nvidia-smi -q | grep -iq Decoder ; echo $?)
+# Grab the latest version of the plex-nvdec-patch.sh from github:
+echo 'Downloading patch script...'
+docker exec -i "$con"  /bin/sh -c "wget -q --show-progress --progress=bar:force:noscroll -P /usr/lib/plexmediaserver/ ${plex_nvdec_url}"
 
-		if [[ "$marap" == "mpeg4" || $nvdec -ne 0 ]]; then
-			exec /usr/lib/plexmediaserver/Plex\ Transcoder2 "$@"
-		else
-			exec /usr/lib/plexmediaserver/Plex\ Transcoder2 -hwaccel nvdec "$@"
-		fi
-@EOF
-	
-	# chmod the new wrapper to be executable:
-	docker exec -i "$con" chmod +x "/usr/lib/plexmediaserver/Plex Transcoder" 
+# Make the patch script executable.
+docker exec -i "$con" chmod +x "/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
 
-	echo '<font color="green"><b>Done!</b></font>' # Green means go!
+# Run the script, with arguments for codecs, if present.
+
+command="/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
+if [ "$codec_arguments" ]; then
+	command+="${codec_arguments}"
+	docker exec -i "$con" /bin/sh -c "${command}${codec_arguments}"
 else
-	# If we ended up here, the patch didn't even try to run, presumably because the patch was already applied.
-	echo '<font color="red"><b>Patch already applied!</b></font>' # Red means stop!
+	docker exec -i "$con" /bin/sh -c "${command}"
 fi

@@ -32,4 +32,4 @@ To update, simply edit the script, and paste the new code in. This script should
 
 ## FAQ
 
-* Is there any way to get this script to run automatically when Plex updates?  _No. There isn't currently an event available to monitor the update of Docker containers. It could be done, but it would have to be done outside of this script. You can however set the script to run every day after you schedule your containers to update._
+* __Is there any way to get this script to run automatically when Plex updates?__  _No. There isn't currently an event available to monitor the update of Docker containers. It could be done, but it would have to be done outside of this script. You can however set the script to run every day after you schedule your containers to update._

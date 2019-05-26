@@ -5,7 +5,7 @@
 # Please visit https://github.com/revr3nd/plex-nvdec/                     #
 # for the author of the new transcode wrapper, and show them your support!#
 # Any issues using this script should be reported at:                     #
-# https://github.com/Xaero252/unraid-plex-nvdec/                          #
+# https://github.com/Xaero252/unraid-plex-nvdec/issues/                   #
 ###########################################################################
 
 # This is the download location for the raw script off github. If the location changes, change it here

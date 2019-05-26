@@ -34,7 +34,7 @@ To update, simply edit the script, and paste the new code in. This script should
 
 * __Is there any way to get this script to run automatically when Plex updates?__  _No. There isn't currently an event available to monitor the update of Docker containers. It could be done, but it would have to be done outside of this script. You can however set the script to run every day after you schedule your containers to update._
 
-* __How do I use the `CODECS` variable, and when should I use it?__ _**Most** users will not need to uncomment this variable. If you wish to experiment with adding various formats to decode, you can uncomment that variable. All "supported" formats are listed in that variable. Below is a list of which formats they are, as well as which ones are enabled by default:_
+* __How do I use the `CODECS` variable, and when should I use it?__ _**Most** users will not need to uncomment this variable. If you wish to experiment with adding various formats to decode, you can uncomment that variable. All "supported" formats are listed in that variable. Know that some of these formats are known to be unstable, or provide unsatisfactory quality output when used with nvdec currently. Below is a list of which formats they are, as well as which ones are enabled by default:_
 
   * h264 (default)       H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10
   * hevc (default)       H.265 / HEVC (High Efficiency Video Coding)
@@ -42,5 +42,5 @@ To update, simply edit the script, and paste the new code in. This script should
   * mpeg4                MPEG-4 part 2
   * vc1                  SMPTE VC-1
   * vp8  (default)       On2 VP8
-  * vp9  (default)       Google VP9"
-_Know that some of these formats are known to be unstable, or provide unsatisfactory quality output when used with nvdec currently._
+  * vp9  (default)       Google VP9
+

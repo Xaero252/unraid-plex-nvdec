@@ -15,6 +15,12 @@ patch_container_path="/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
 # This should always return the name of the docker container running plex - assuming a single plex docker on the system.
 con="$(docker ps --format "{{.Names}}" | grep -i plex)"
 
+# Verify plex container is running
+if [ -z $con ]; then
+	echo -n "<font color='red'><b>Error: Cannot find Plex container. Make sure it's running and has "plex" in the name.</b></font>"
+        exit 1
+fi
+
 # Uncomment and change the variable below if you wish to edit which codecs are decoded:
 #CODECS=("h264" "hevc" "mpeg2video" "mpeg4" "vc1" "vp8" "vp9")
 
@@ -26,11 +32,17 @@ if [ "$CODECS" ]; then
 	done
 fi
 
-echo -n "<b>Applying hardware decode patch... </b><br/>"
+echo "Applying hardware decode patch..."
 	
 # Grab the latest version of the plex-nvdec-patch.sh from github:
-echo 'Downloading patch script...'
+echo -n 'Downloading patch script...'
 wget -qO- --show-progress --progress=bar:force:noscroll "${plex_nvdec_url}" | docker exec -i "$con"  /bin/sh -c "cat > ${patch_container_path}" 
+
+# Verify that wget was successful
+if [[ $? -ne 0 ]]; then
+    echo -n "<font color='red'><b>Error: wget download failed, non-zero exit code.</b></font>"
+    exit 1; 
+fi
 
 # Make the patch script executable.
 docker exec -i "$con" chmod +x "${patch_container_path}"

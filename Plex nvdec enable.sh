@@ -15,11 +15,34 @@ patch_container_path="/usr/lib/plexmediaserver/plex-nvdec-patch.sh"
 # This should always return the name of the docker container running plex - assuming a single plex docker on the system.
 con="$(docker ps --format "{{.Names}}" | grep -i plex)"
 
+####
+# Helper functions
+####
+
+# Usage: checkdep appname
+checkdep() {
+  if ! command -v $1 >/dev/null 2>&1; then
+    echo -n "<font color='red'><b>Error: Dependency '$1' is not in the path. Is it installed?</b></font>"
+    exit 1
+  fi
+}
+
+####
+# Check dependencies
+####
+
 # Verify plex container is running
 if [ -z $con ]; then
-	echo -n "<font color='red'><b>Error: Cannot find Plex container. Make sure it's running and has "plex" in the name.</b></font>"
+	echo -n "<font color='red'><b>Error: Cannot find Plex container. Make sure it's running and has 'plex' in the name.</b></font>"
         exit 1
 fi
+
+checkdep wget
+checkdep docker
+
+####
+# Main work
+####
 
 # Uncomment and change the variable below if you wish to edit which codecs are decoded:
 #CODECS=("h264" "hevc" "mpeg2video" "mpeg4" "vc1" "vp8" "vp9")

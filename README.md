@@ -21,10 +21,13 @@ If you've manually applied, or installed any other version of this script prior 
 2. Enter a name for the script, "Plex nvdec enable" is the name I use, but you can name it anything you like.
 3. Click the name of the script, and then click "Edit Script."
 4. Delete the contents of the edit pane.
-5. Copy the contents of [Plex nvdec enable.sh](Plex nvdec enable.sh) from this repository into the empty edit pane.
+5. Copy the contents of [Plex nvdec enable.sh](Plex_nvdec_enable.sh) from this repository into the empty edit pane.
 6. Click Save Changes.
 7. Click "Run Script" next to the script on the User Scripts page.
 8. (Optional) Set a schedule to run the script. Highly recommended to reapply the patch each time Plex is updated.
+
+## Testing
+To test that this works, go to the command line on unraid, then run `nvidia-smi dmon -s u`. You'll see the final 2 columns be `enc` and `dec` which represents encoding and decoding by the GPU. Now go to a plex client and play a movie that will do a transcode. If this patch worked, you'll see both columns be non-zero as it's transcoding.  If only the `enc` column is non-zero, something went wrong with your patch.
 
 ## Updating
 
